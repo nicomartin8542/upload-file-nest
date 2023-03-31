@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   UseInterceptors,
   UploadedFile,
@@ -15,7 +14,7 @@ import { storageData } from './helpers/storage.helpers';
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
-  //Un archivo
+  //Un archivo -> Ejemplo para cargar los archivos en el storage interno
   @Post('one')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -26,22 +25,13 @@ export class FilesController {
     @UploadedFile(validFileData)
     file: Express.Multer.File,
   ) {
-    return file.originalname;
+    return file;
   }
 
   //Multimples archivos
   @Post('multiple')
-  @UseInterceptors(
-    FilesInterceptor('file', 2, {
-      storage: storageData,
-    }),
-  )
+  @UseInterceptors(FilesInterceptor('file', 2))
   uploadFiles(@UploadedFiles(validFileData) files: Express.Multer.File[]) {
-    return files.map((file) => file.originalname);
-  }
-
-  @Get()
-  getUrlfile() {
-    return 'get url file';
+    return this.filesService.uploadFiles(files);
   }
 }

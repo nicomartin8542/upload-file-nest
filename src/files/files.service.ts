@@ -1,26 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFileDto } from './dto/create-file.dto';
-import { UpdateFileDto } from './dto/update-file.dto';
+import { ClodinaryService } from 'src/clodinary/clodinary.service';
 
 @Injectable()
 export class FilesService {
-  create(createFileDto: CreateFileDto) {
-    return 'This action adds a new file';
-  }
+  constructor(private readonly cloudnarySercice: ClodinaryService) {}
 
-  findAll() {
-    return `This action returns all files`;
-  }
+  async uploadFiles(files: Express.Multer.File[]) {
+    const promiseUpload = [];
 
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
-  }
+    files.forEach((file) =>
+      promiseUpload.push(this.cloudnarySercice.uploadFileCloudinary(file)),
+    );
 
-  update(id: number, updateFileDto: UpdateFileDto) {
-    return `This action updates a #${id} file`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} file`;
+    const result = await Promise.all(promiseUpload);
+    return result.map(({ secure_url }) => secure_url);
   }
 }
