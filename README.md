@@ -24,3 +24,8 @@ http://localhost:3000/api/files/one
 ```
 http://localhost:3000/api/files/multiple
 ```
+
+# Stack utilizado
+
+- NestJS
+- Servidor para almacenar los archivos: Cloudinary
