@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesController } from './files.controller';
-import { ClodinaryModule } from 'src/clodinary/clodinary.module';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
   controllers: [FilesController],
   providers: [FilesService],
-  imports: [ClodinaryModule],
+  imports: [CommonModule],
 })
 export class FilesModule {}

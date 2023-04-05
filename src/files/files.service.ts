@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { ClodinaryService } from 'src/clodinary/clodinary.service';
-
+import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
+import { ServerFiles } from 'src/common/cloudfiles/server-files';
 @Injectable()
 export class FilesService {
-  constructor(private readonly cloudnarySercice: ClodinaryService) {}
+  constructor(private readonly serverFiles: ServerFiles) {}
 
   async uploadFiles(files: Express.Multer.File[]) {
     const promiseUpload = [];
 
     files.forEach((file) =>
-      promiseUpload.push(this.cloudnarySercice.uploadFileCloudinary(file)),
+      promiseUpload.push(
+        this.serverFiles.uploadFile<UploadApiErrorResponse | UploadApiResponse>(
+          file,
+        ),
+      ),
     );
 
     const result = await Promise.all(promiseUpload);
