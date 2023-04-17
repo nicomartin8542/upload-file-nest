@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
-import { ServerFiles } from 'src/common/cloudfiles/server-files';
+import { ServerFiles } from './cloudfiles/server-files';
 @Injectable()
 export class FilesService {
   constructor(private readonly serverFiles: ServerFiles) {}
@@ -16,7 +16,12 @@ export class FilesService {
       ),
     );
 
-    const result = await Promise.all(promiseUpload);
-    return result.map(({ secure_url }) => secure_url);
+    try {
+      const result = await Promise.all(promiseUpload);
+      return result.map(({ secure_url }) => secure_url);
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error al subir los archivos al servidor!');
+    }
   }
 }
