@@ -1,6 +1,6 @@
 import { HttpStatus, ParseFilePipeBuilder } from '@nestjs/common';
 
-export const validFileData = new ParseFilePipeBuilder()
+export const validFileDataImages = new ParseFilePipeBuilder()
   .addFileTypeValidator({
     fileType: new RegExp(/(plain|txt|csv|pdf|jpeg|png)/i),
   })

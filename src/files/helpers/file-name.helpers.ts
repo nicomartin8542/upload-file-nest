@@ -6,10 +6,15 @@ export const fileNameStorage = (
   file: Express.Multer.File,
   callback: (err: Error, fileName: string) => any,
 ) => {
+  let fileName: string;
+
   if (!file) callback(new BadRequestException('File not valid'), null);
 
   const extensionFile = file.mimetype.split('/')[1];
-  const fileName = `${uuid()}.${extensionFile} `;
+
+  ['plain', 'txt'].includes(extensionFile.toLowerCase())
+    ? (fileName = file.originalname)
+    : (fileName = `${uuid()}.${extensionFile} `);
 
   return callback(null, fileName);
 };

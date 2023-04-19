@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { FilesModule } from './files/files.module';
 import { ConfigModule } from '@nestjs/config';
-import { CommonModule } from './common/common.module';
+import { ServerFiles } from './files/cloudfiles/server-files';
 
 @Module({
-  imports: [FilesModule, ConfigModule.forRoot(), CommonModule],
-  providers: [],
+  imports: [FilesModule, ConfigModule.forRoot()],
 })
 export class AppModule {}
