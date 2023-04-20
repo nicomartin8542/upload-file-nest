@@ -9,10 +9,11 @@ import {
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { validFileDataImages } from './helpers/file-valid-data-images.helpers';
-import { storageData } from './helpers/storage.helpers';
-import { IncomingHttpHeaders } from 'http';
-import { validFileDataPlain } from './helpers/file-valid-data-plain.helpers';
+import { validFileData, storageData } from './helpers';
+import { ValidDataInterface } from './interfaces/file-valid-data.interface';
+
+const EXTENSION_IMAGES: RegExp = /(plain|txt|csv|pdf|jpeg|png)/i;
+const EXTENSION_PLAIN: RegExp = /(plain|txt|csv)/i;
 
 @Controller('files')
 export class FilesController {
@@ -26,7 +27,9 @@ export class FilesController {
     }),
   )
   uploadFile(
-    @UploadedFile(validFileDataImages)
+    @UploadedFile(
+      validFileData({ extensionFilters: EXTENSION_IMAGES, size: 17000 }),
+    )
     file: Express.Multer.File,
   ) {
     return file;
@@ -36,7 +39,10 @@ export class FilesController {
   @Post('multiple')
   @UseInterceptors(FilesInterceptor('file', 2))
   uploadFiles(
-    @UploadedFiles(validFileDataImages) files: Express.Multer.File[],
+    @UploadedFiles(
+      validFileData({ extensionFilters: EXTENSION_IMAGES, size: 17000 }),
+    )
+    files: Express.Multer.File[],
   ) {
     return this.filesService.uploadFiles(files);
   }
@@ -48,7 +54,10 @@ export class FilesController {
     }),
   )
   async uploadFilePlain(
-    @UploadedFile(validFileDataPlain) file: Express.Multer.File,
+    @UploadedFile(
+      validFileData({ extensionFilters: EXTENSION_PLAIN, size: 17000 }),
+    )
+    file: Express.Multer.File,
   ) {
     return await this.filesService.procesFilePlain(file);
   }

@@ -41,7 +41,7 @@ export class FilesService {
       //Verifico si es csv
       if (file.mimetype.split('/')[1] === 'csv') {
         const delimiter = ',';
-        const data = await this.readCsv<string[]>(file, ';');
+        const data = await this.readCsv<string[]>(file, ',');
         return data;
       }
 
