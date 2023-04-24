@@ -30,18 +30,21 @@ export class FilesService {
 
   async procesFilePlain(file: Express.Multer.File) {
     try {
-      const keysCsv = [
-        'fechaNac',
-        'dni',
-        'nombre',
-        'cuil',
-        'sexo',
-        'domicilio',
+      const KEYSCSV = [
+        'campo 1',
+        'campo 2',
+        'campo 3',
+        'campo 4',
+        'campo 5',
+        'campo 6',
+        'campo 7',
+        'campo 8',
       ];
+
       //Verifico si es csv
       if (file.mimetype.split('/')[1] === 'csv') {
         const delimiter = ',';
-        const data = await this.readCsv<string[]>(file, ',');
+        const data = await this.readCsv<string[]>(file, ';', KEYSCSV);
         return data;
       }
 
@@ -75,7 +78,7 @@ export class FilesService {
 
   private readCsv<T>(
     file: Express.Multer.File,
-    delimiter: string = ',',
+    delimiter: string = ';',
     keys?: string[],
   ) {
     let result: T[] = [];
@@ -93,16 +96,12 @@ export class FilesService {
             keys?.length === 0 || !keys
               ? result
               : result.map((row) => {
-                  return {
-                    [keys[0]]: row[0],
-                    [keys[1]]: row[1],
-                    [keys[2]]: row[2],
-                    [keys[3]]: row[3],
-                    [keys[4]]: row[4],
-                    [keys[5]]: row[5],
-                  };
+                  let obj = {};
+                  keys.forEach((key, i) =>
+                    Object.assign(obj, { [key]: row[i] }),
+                  );
+                  return obj;
                 });
-
           resolve(output);
         });
     });
