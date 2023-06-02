@@ -1,16 +1,14 @@
 import {
   Controller,
   Post,
-  Get,
   UseInterceptors,
   UploadedFile,
   UploadedFiles,
-  Headers,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { validFileData, storageData } from './helpers';
-import { ValidDataInterface } from './interfaces/file-valid-data.interface';
+import { fileFilter } from './helpers/file-name-filter.helpers';
 
 const EXTENSION_IMAGES: RegExp = /(plain|txt|csv|pdf|jpeg|png)/i;
 const EXTENSION_PLAIN: RegExp = /(plain|txt|csv)/i;
@@ -37,14 +35,20 @@ export class FilesController {
 
   //Multimples archivos
   @Post('multiple')
-  @UseInterceptors(FilesInterceptor('file', 2))
+  @UseInterceptors(
+    FilesInterceptor('file', 2, {
+      //cambio nombre de archivo sin gardarlo en en el storage local del servidor
+      fileFilter,
+    }),
+  )
   uploadFiles(
     @UploadedFiles(
-      validFileData({ extensionFilters: EXTENSION_IMAGES, size: 17000 }),
+      validFileData({ extensionFilters: EXTENSION_IMAGES, size: 25000 }),
     )
     files: Express.Multer.File[],
   ) {
-    return this.filesService.uploadFiles(files);
+    //return this.filesService.uploadFiles(files);
+    return files.map((f) => f.originalname);
   }
 
   @Post('plain')
